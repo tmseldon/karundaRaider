@@ -20,12 +20,13 @@ void UMover::BeginPlay()
 	Super::BeginPlay();
 
 	//Getting initial parameters 
-	mOriginalLocation = GetOwner()->GetTargetLocation();
+	mOwner = GetOwner();
+	mOriginalLocation = mOwner->GetTargetLocation();
 	mTargetLocation = mOriginalLocation + MoveOffset;
 	mSpeed = FVector::Distance(mOriginalLocation, mTargetLocation) / MoveTime;
 
 	//Código de prueba de punteros y log
-
+	//
 	//AActor* Owner = GetOwner();
 	////FString NameOwner = (*Owner).GetActorNameOrLabel();
 	//FString NameOwner = Owner->GetActorNameOrLabel();
@@ -43,8 +44,11 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FVector CurrentLocation = GetOwner()->GetTargetLocation();
-	FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, mTargetLocation, DeltaTime, mSpeed);
-	GetOwner()->SetActorLocation(NewLocation);
+	if (bShouldMove)
+	{
+		FVector CurrentLocation = GetOwner()->GetTargetLocation();
+		FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, mTargetLocation, DeltaTime, mSpeed);
+		mOwner->SetActorLocation(NewLocation);
+	}
 }
 

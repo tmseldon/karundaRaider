@@ -3,18 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
-#include "Mover.generated.h"
+#include "Components/SceneComponent.h"
+#include "Grabber.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class KARUNDARAIDER_API UMover : public UActorComponent
+class KARUNDARAIDER_API UGrabber : public USceneComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UMover();
+	UGrabber();
 
 protected:
 	// Called when the game starts
@@ -24,18 +24,15 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(EditAnywhere)
-		FVector MoveOffset;
+private:
 
 	UPROPERTY(EditAnywhere)
-		float MoveTime = 5;
+		float mMaxGrabDistance = 400;
 
 	UPROPERTY(EditAnywhere)
-		bool bShouldMove = false;
+		float mMaxGrabRadius = 100;
+
+	FRotator mRotationGrabber;
+	int mGapFrame = 0;
 		
-	AActor* mOwner;
-	FVector mOriginalLocation;
-	FVector mCurrentLocation;
-	FVector mTargetLocation;
-	float mSpeed = 0;
 };
