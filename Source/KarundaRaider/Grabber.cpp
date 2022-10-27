@@ -50,31 +50,40 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	//mGapFrame++;
 
-	//DrawLine
+}
+
+void UGrabber::Release()
+{
+	UE_LOG(LogTemp, Display, TEXT("Release button"));
+}
+
+void UGrabber::Grab()
+{
+	//Setup Ray
 	FVector StartPoint = GetComponentLocation();
 	FVector EndPoint = StartPoint + mMaxGrabDistance * GetForwardVector();
 
-	DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red);
+	//Debug Ray
+	//DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red);
 
-
+	//Raycast info
 	FCollisionShape Sphere = FCollisionShape::MakeSphere(mMaxGrabRadius);
 	FHitResult FHitInfo;
+
 	bool bHasHit = GetWorld()->SweepSingleByChannel
 	(
-		FHitInfo, 
-		StartPoint, 
-		EndPoint, 
-		FQuat::Identity, 
-		ECC_GameTraceChannel2, 
+		FHitInfo,
+		StartPoint,
+		EndPoint,
+		FQuat::Identity,
+		ECC_GameTraceChannel2,
 		Sphere
 	);
 
-	if(bHasHit) 
+	if (bHasHit)
 	{
 		FString NombreActor = FHitInfo.GetActor()->GetActorNameOrLabel();
-		UE_LOG(LogTemp, Display, TEXT("El nombre del obejeto es %s"), *NombreActor); 
+		UE_LOG(LogTemp, Display, TEXT("El nombre del obejeto es %s"), *NombreActor);
 	}
-
-
 }
 
