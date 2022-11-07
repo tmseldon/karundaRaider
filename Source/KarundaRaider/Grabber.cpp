@@ -3,9 +3,9 @@
 
 #include "Grabber.h"
 #include "Engine/World.h"
-#include "DrawDebugHelpers.h"
-#include "Components/SceneComponent.h"
 #include "Engine/EngineTypes.h"
+#include "DrawDebugHelpers.h"
+
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -14,16 +14,25 @@ UGrabber::UGrabber()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
-
-
 }
 
 
 // Called when the game starts
 void UGrabber::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
+
+	
+	//if (UGrabber::GetPhysicHandle())
+	//{
+	//	FString NombreComponente = UGrabber::GetPhysicHandle()->GetName();
+	//	UE_LOG(LogTemp, Display, TEXT("El nombre de la componente es %s"), *NombreComponente);
+	//}
+	//else
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("El handlePhysics no existe, el puntero es null"));
+	//}
+
 }
 
 
@@ -32,9 +41,12 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//if (mGapFrame % 10 == 0)
-	//{
-	//	//Rotacion
+	if (UGrabber::GetPhysicHandle() == nullptr) { return; }
+
+	FVector GrabObjectPos = GetComponentLocation() + GetForwardVector() * mHoldingDistance;
+	UGrabber::GetPhysicHandle()->SetTargetLocationAndRotation(GrabObjectPos, GetComponentRotation());
+
+
 	//	mRotationGrabber = GetComponentRotation();
 	//	FString RotationText = mRotationGrabber.ToCompactString();
 
@@ -59,12 +71,15 @@ void UGrabber::Release()
 
 void UGrabber::Grab()
 {
+	if (UGrabber::GetPhysicHandle() == nullptr) { return; }
+	
 	//Setup Ray
 	FVector StartPoint = GetComponentLocation();
 	FVector EndPoint = StartPoint + mMaxGrabDistance * GetForwardVector();
 
-	//Debug Ray
+	////Debug Ray
 	//DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red);
+	//DrawDebugSphere(GetWorld(), EndPoint, 5, 10, FColor::Green, false, 5);
 
 	//Raycast info
 	FCollisionShape Sphere = FCollisionShape::MakeSphere(mMaxGrabRadius);
@@ -82,8 +97,25 @@ void UGrabber::Grab()
 
 	if (bHasHit)
 	{
-		FString NombreActor = FHitInfo.GetActor()->GetActorNameOrLabel();
-		UE_LOG(LogTemp, Display, TEXT("El nombre del obejeto es %s"), *NombreActor);
+		UGrabber::GetPhysicHandle()->GrabComponentAtLocationWithRotation
+		(
+			FHitInfo.GetComponent(),
+			NAME_None,
+			FHitInfo.ImpactPoint,
+			GetComponentRotation()
+		);
+
+		////Debug Info
+		//FString NombreActor = FHitInfo.GetActor()->GetActorNameOrLabel();
+		//UE_LOG(LogTemp, Display, TEXT("El nombre del obejeto es %s"), *NombreActor);
+		//
+		//DrawDebugSphere(GetWorld(), FHitInfo.Location, 10, 10, FColor::Yellow, false, 5);
+		//DrawDebugSphere(GetWorld(), FHitInfo.ImpactPoint, 10, 10, FColor::Red, false, 5);
 	}
+}
+
+UPhysicsHandleComponent * UGrabber::GetPhysicHandle() const
+{
+	return GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 }
 
