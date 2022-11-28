@@ -41,11 +41,13 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (UGrabber::GetPhysicHandle() == nullptr) { return; }
+	UPhysicsHandleComponent* PhysicHandle = UGrabber::GetPhysicHandle();
 
+	if (PhysicHandle == nullptr || PhysicHandle->GetGrabbedComponent() == nullptr ) { return; }
+	 
 	FVector GrabObjectPos = GetComponentLocation() + GetForwardVector() * mHoldingDistance;
-	UGrabber::GetPhysicHandle()->SetTargetLocationAndRotation(GrabObjectPos, GetComponentRotation());
-
+	PhysicHandle->SetTargetLocationAndRotation(GrabObjectPos, GetComponentRotation());
+	
 
 	//	mRotationGrabber = GetComponentRotation();
 	//	FString RotationText = mRotationGrabber.ToCompactString();
@@ -67,11 +69,20 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Display, TEXT("Release button"));
+
+	UPrimitiveComponent* ComponentGrabbed = UGrabber::GetPhysicHandle()->GetGrabbedComponent();
+	if (ComponentGrabbed == nullptr) { return; }
+
+	ComponentGrabbed->WakeAllRigidBodies();
+	UGrabber::GetPhysicHandle()->ReleaseComponent();
 }
 
 void UGrabber::Grab()
 {
-	if (UGrabber::GetPhysicHandle() == nullptr) { return; }
+	UE_LOG(LogTemp, Display, TEXT("Calling grab button"));
+	UPhysicsHandleComponent* PhysicHandle = UGrabber::GetPhysicHandle();
+
+	if (PhysicHandle == nullptr) { return; }
 	
 	//Setup Ray
 	FVector StartPoint = GetComponentLocation();
@@ -97,15 +108,18 @@ void UGrabber::Grab()
 
 	if (bHasHit)
 	{
-		UGrabber::GetPhysicHandle()->GrabComponentAtLocationWithRotation
+		UPrimitiveComponent* HitComponent = FHitInfo.GetComponent();
+		HitComponent->WakeAllRigidBodies();
+
+		PhysicHandle->GrabComponentAtLocationWithRotation
 		(
-			FHitInfo.GetComponent(),
+			HitComponent,
 			NAME_None,
 			FHitInfo.ImpactPoint,
 			GetComponentRotation()
 		);
 
-		////Debug Info
+		//////Debug Info
 		//FString NombreActor = FHitInfo.GetActor()->GetActorNameOrLabel();
 		//UE_LOG(LogTemp, Display, TEXT("El nombre del obejeto es %s"), *NombreActor);
 		//
@@ -116,6 +130,10 @@ void UGrabber::Grab()
 
 UPhysicsHandleComponent * UGrabber::GetPhysicHandle() const
 {
-	return GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	UPhysicsHandleComponent* Result = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (Result == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No UPhysicsHandleComponent found on player"));
+	}
+	return Result;
 }
-
