@@ -80,31 +80,13 @@ void UGrabber::Release()
 void UGrabber::Grab()
 {
 	UE_LOG(LogTemp, Display, TEXT("Calling grab button"));
+
 	UPhysicsHandleComponent* PhysicHandle = UGrabber::GetPhysicHandle();
-
 	if (PhysicHandle == nullptr) { return; }
-	
-	//Setup Ray
-	FVector StartPoint = GetComponentLocation();
-	FVector EndPoint = StartPoint + mMaxGrabDistance * GetForwardVector();
 
-	////Debug Ray
-	//DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red);
-	//DrawDebugSphere(GetWorld(), EndPoint, 5, 10, FColor::Green, false, 5);
-
-	//Raycast info
-	FCollisionShape Sphere = FCollisionShape::MakeSphere(mMaxGrabRadius);
+	//Init variables for references	
 	FHitResult FHitInfo;
-
-	bool bHasHit = GetWorld()->SweepSingleByChannel
-	(
-		FHitInfo,
-		StartPoint,
-		EndPoint,
-		FQuat::Identity,
-		ECC_GameTraceChannel2,
-		Sphere
-	);
+	bool bHasHit = GetGrabbableInReach(FHitInfo);
 
 	if (bHasHit)
 	{
@@ -127,6 +109,31 @@ void UGrabber::Grab()
 		//DrawDebugSphere(GetWorld(), FHitInfo.ImpactPoint, 10, 10, FColor::Red, false, 5);
 	}
 }
+
+bool UGrabber::GetGrabbableInReach(FHitResult& FHitData) const
+{
+	//Setup Ray
+	FVector StartPoint = GetComponentLocation();
+	FVector EndPoint = StartPoint + mMaxGrabDistance * GetForwardVector();
+
+	////Debug Ray
+	//DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red);
+	//DrawDebugSphere(GetWorld(), EndPoint, 5, 10, FColor::Green, false, 5);
+
+	//Raycast info
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(mMaxGrabRadius);
+
+	return GetWorld()->SweepSingleByChannel
+	(
+		FHitData,
+		StartPoint,
+		EndPoint,
+		FQuat::Identity,
+		ECC_GameTraceChannel2,
+		Sphere
+	);
+}
+
 
 UPhysicsHandleComponent * UGrabber::GetPhysicHandle() const
 {

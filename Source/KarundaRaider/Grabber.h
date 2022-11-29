@@ -48,5 +48,5 @@ private:
 	int mGapFrame = 0;
 
 	UPhysicsHandleComponent* GetPhysicHandle() const;
-		
+	bool GetGrabbableInReach(FHitResult& FHitData) const;
 };
