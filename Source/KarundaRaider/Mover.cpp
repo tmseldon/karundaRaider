@@ -38,6 +38,11 @@ void UMover::BeginPlay()
 
 }
 
+void UMover::SetShouldMove(bool bNewCondition)
+{
+	bShouldMove = bNewCondition;
+}
+
 
 // Called every frame
 void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

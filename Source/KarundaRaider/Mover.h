@@ -23,6 +23,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void SetShouldMove(bool bCondition);
 
 	UPROPERTY(EditAnywhere)
 		FVector MoveOffset;
@@ -30,9 +31,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		float MoveTime = 5;
 
-	UPROPERTY(EditAnywhere)
-		bool bShouldMove = false;
-		
+	bool bShouldMove = false;
 	AActor* mOwner;
 	FVector mOriginalLocation;
 	FVector mCurrentLocation;

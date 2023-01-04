@@ -23,13 +23,38 @@ void UTriggerComponent::BeginPlay()
 void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	GetOverlappingActors(mOverlappingActors);
-	if (mOverlappingActors.Num() > 0)
+	
+	AActor* potentialActor = GetAcceptableActor();
+	if (potentialActor != nullptr) 
 	{
-		for(AActor* actorsOver : mOverlappingActors)
+		Mover->SetShouldMove(true);
+		UE_LOG(LogTemp, Display, TEXT("Desbloqueando con %s"), *potentialActor->GetActorNameOrLabel());
+	}
+	else
+	{
+		Mover->SetShouldMove(false);
+	}
+}
+
+void UTriggerComponent::SetMover(UMover* NewMover)
+{
+	Mover = NewMover;
+}
+
+AActor* UTriggerComponent::GetAcceptableActor() const
+{
+	TArray <AActor*> overlappingActors;
+	GetOverlappingActors(overlappingActors);
+
+	if (overlappingActors.Num() == 0) { return nullptr; }
+
+	for (AActor* actorsOver : overlappingActors)
+	{
+		if (actorsOver->ActorHasTag(AcceptableTagActor))
 		{
-			UE_LOG(LogTemp, Display, TEXT("Overlapping actor de nombre %s"), *actorsOver->GetActorNameOrLabel());
+			return actorsOver;
 		}
 	}
+
+	return nullptr;
 }
