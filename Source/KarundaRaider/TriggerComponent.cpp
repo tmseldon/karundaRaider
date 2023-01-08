@@ -24,21 +24,29 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	AActor* potentialActor = GetAcceptableActor();
-	if (potentialActor != nullptr) 
+	AActor* PotentialActor = GetAcceptableActor();
+	if (PotentialActor != nullptr) 
 	{
-		Mover->SetShouldMove(true);
-		UE_LOG(LogTemp, Display, TEXT("Desbloqueando con %s"), *potentialActor->GetActorNameOrLabel());
+		UPrimitiveComponent* RootPotentialActor = Cast<UPrimitiveComponent>(PotentialActor->GetRootComponent());
+		// Setting the object fixed to this actor
+		if (RootPotentialActor != nullptr)
+		{
+			RootPotentialActor->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
+			RootPotentialActor->SetSimulatePhysics(false);
+		}
+
+		mMover->SetShouldMove(true);
+		UE_LOG(LogTemp, Display, TEXT("Desbloqueando con %s"), *PotentialActor->GetActorNameOrLabel());
 	}
 	else
 	{
-		Mover->SetShouldMove(false);
+		mMover->SetShouldMove(false);
 	}
 }
 
 void UTriggerComponent::SetMover(UMover* NewMover)
 {
-	Mover = NewMover;
+	mMover = NewMover;
 }
 
 AActor* UTriggerComponent::GetAcceptableActor() const
@@ -50,7 +58,7 @@ AActor* UTriggerComponent::GetAcceptableActor() const
 
 	for (AActor* actorsOver : overlappingActors)
 	{
-		if (actorsOver->ActorHasTag(AcceptableTagActor))
+		if (actorsOver->ActorHasTag(mAcceptableTagActor))
 		{
 			return actorsOver;
 		}

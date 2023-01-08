@@ -30,9 +30,9 @@ class KARUNDARAIDER_API UTriggerComponent : public UBoxComponent
 
 	private:
 		UPROPERTY(EditAnywhere)
-		FName AcceptableTagActor;
+		FName mAcceptableTagActor;
 
 		AActor* GetAcceptableActor() const;
-		UMover* Mover;
+		UMover* mMover;
 	
 };
