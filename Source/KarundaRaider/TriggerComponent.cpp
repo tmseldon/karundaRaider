@@ -31,10 +31,10 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 		// Setting the object fixed to this actor
 		if (RootPotentialActor != nullptr)
 		{
-			RootPotentialActor->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
 			RootPotentialActor->SetSimulatePhysics(false);
 		}
 
+		PotentialActor->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
 		mMover->SetShouldMove(true);
 		UE_LOG(LogTemp, Display, TEXT("Desbloqueando con %s"), *PotentialActor->GetActorNameOrLabel());
 	}
