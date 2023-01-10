@@ -44,9 +44,14 @@ private:
 	UPROPERTY(EditAnywhere)
 		float mHoldingDistance = 200;
 
+	FHitResult mHitInfoBeingGrabbed;
 	FRotator mRotationGrabber;
 	int mGapFrame = 0;
 
+	const FName mGrabText = "Grabbed";
+	const FName mUnGrabText = "Ungrabbed";
+
 	UPhysicsHandleComponent* GetPhysicHandle() const;
 	bool GetGrabbableInReach(FHitResult& FHitData) const;
+	void ChangeTagState(FName AddNewTag, FName RemoveOldTag);
 };

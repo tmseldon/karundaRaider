@@ -72,7 +72,8 @@ void UGrabber::Release()
 
 	UPrimitiveComponent* ComponentGrabbed = UGrabber::GetPhysicHandle()->GetGrabbedComponent();
 	if (ComponentGrabbed == nullptr) { return; }
-
+	
+	ChangeTagState(mUnGrabText, mGrabText);
 	ComponentGrabbed->WakeAllRigidBodies();
 	UGrabber::GetPhysicHandle()->ReleaseComponent();
 }
@@ -85,19 +86,19 @@ void UGrabber::Grab()
 	if (PhysicHandle == nullptr) { return; }
 
 	//Init variables for references	
-	FHitResult FHitInfo;
-	bool bHasHit = GetGrabbableInReach(FHitInfo);
+	bool bHasHit = GetGrabbableInReach(mHitInfoBeingGrabbed);
 
 	if (bHasHit)
 	{
-		UPrimitiveComponent* HitComponent = FHitInfo.GetComponent();
+		UPrimitiveComponent* HitComponent = mHitInfoBeingGrabbed.GetComponent();
 		HitComponent->WakeAllRigidBodies();
+		ChangeTagState(mGrabText, mUnGrabText);
 
 		PhysicHandle->GrabComponentAtLocationWithRotation
 		(
 			HitComponent,
 			NAME_None,
-			FHitInfo.ImpactPoint,
+			mHitInfoBeingGrabbed.ImpactPoint,
 			GetComponentRotation()
 		);
 
@@ -108,6 +109,16 @@ void UGrabber::Grab()
 		//DrawDebugSphere(GetWorld(), FHitInfo.Location, 10, 10, FColor::Yellow, false, 5);
 		//DrawDebugSphere(GetWorld(), FHitInfo.ImpactPoint, 10, 10, FColor::Red, false, 5);
 	}
+}
+
+void UGrabber::ChangeTagState(FName AddNewTag, FName RemoveOldTag)
+{
+	AActor* ActorToTag = mHitInfoBeingGrabbed.GetActor();
+	
+	if (ActorToTag == nullptr) { return; }
+	
+	ActorToTag->Tags.Remove(RemoveOldTag);
+	ActorToTag->Tags.Add(AddNewTag);
 }
 
 bool UGrabber::GetGrabbableInReach(FHitResult& FHitData) const
