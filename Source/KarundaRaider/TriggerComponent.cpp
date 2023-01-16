@@ -36,7 +36,7 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 		PotentialActor->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
 		mMover->SetShouldMove(true);
-		UE_LOG(LogTemp, Display, TEXT("Desbloqueando con %s"), *PotentialActor->GetActorNameOrLabel());
+		//UE_LOG(LogTemp, Display, TEXT("Desbloqueando con %s"), *PotentialActor->GetActorNameOrLabel());
 	}
 	else
 	{
@@ -58,7 +58,7 @@ AActor* UTriggerComponent::GetAcceptableActor() const
 
 	for (AActor* actorsOver : overlappingActors)
 	{
-		if (actorsOver->ActorHasTag(mAcceptableTagActor))
+		if (actorsOver->ActorHasTag(mAcceptableTagActor) && !actorsOver->ActorHasTag("Grabbed"))
 		{
 			return actorsOver;
 		}
