@@ -92,6 +92,12 @@ void UGrabber::Grab()
 	{
 		UPrimitiveComponent* HitComponent = mHitInfoBeingGrabbed.GetComponent();
 		HitComponent->WakeAllRigidBodies();
+		
+		//reactivate element
+		HitComponent->SetSimulatePhysics(true);
+		AActor* ActorGrabbed = mHitInfoBeingGrabbed.GetActor();
+		ActorGrabbed->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		
 		ChangeTagState(mGrabText, mUnGrabText);
 
 		PhysicHandle->GrabComponentAtLocationWithRotation
