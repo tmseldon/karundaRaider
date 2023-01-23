@@ -24,6 +24,8 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
+	if (mMover == nullptr) { return; }
+
 	AActor* PotentialActor = GetAcceptableActor();
 	if (PotentialActor != nullptr) 
 	{
