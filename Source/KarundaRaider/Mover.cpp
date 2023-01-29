@@ -48,21 +48,20 @@ void UMover::SetShouldMove(bool bNewCondition)
 void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
 	FVector CurrentLocation = GetOwner()->GetTargetLocation();
+	FVector FinalLocation = mOriginalLocation;
 
-	if (bShouldMove && 
-		!FMath::IsNearlyZero((mTargetLocation - CurrentLocation).SizeSquared()))
+	if (bShouldMove)
 	{
-		FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, mTargetLocation, DeltaTime, mSpeed);
-		mOwner->SetActorLocation(NewLocation);
-		UE_LOG(LogTemp, Display, TEXT("Estoy abriendo %f"), (mTargetLocation - CurrentLocation).SizeSquared());
+		FinalLocation = mTargetLocation;
 	}
-	else if(!bShouldMove &&
-		!FMath::IsNearlyZero((CurrentLocation - mOriginalLocation).SizeSquared()))
+
+	if (!FMath::IsNearlyZero((FinalLocation - CurrentLocation).SizeSquared()))
 	{
-		FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, mOriginalLocation, DeltaTime, mSpeed);
+		FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, FinalLocation, DeltaTime, mSpeed);
 		mOwner->SetActorLocation(NewLocation);
-		UE_LOG(LogTemp, Display, TEXT("Estoy cerrando %f"), (CurrentLocation - mOriginalLocation).SizeSquared());
+		// UE_LOG(LogTemp, Display, TEXT("Estoy moviemdome %f"), (FinalLocation - CurrentLocation).SizeSquared());
 	}
 }
 
