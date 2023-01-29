@@ -48,12 +48,21 @@ void UMover::SetShouldMove(bool bNewCondition)
 void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	FVector CurrentLocation = GetOwner()->GetTargetLocation();
 
-	if (bShouldMove)
+	if (bShouldMove && 
+		!FMath::IsNearlyZero(mTargetLocation.SizeSquared() - CurrentLocation.SizeSquared(), 0.04))
 	{
-		FVector CurrentLocation = GetOwner()->GetTargetLocation();
 		FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, mTargetLocation, DeltaTime, mSpeed);
 		mOwner->SetActorLocation(NewLocation);
+		UE_LOG(LogTemp, Display, TEXT("Estoy abriendo %f"), CurrentLocation.SizeSquared() - mTargetLocation.SizeSquared());
+	}
+	else if(!bShouldMove &&
+		!FMath::IsNearlyZero(CurrentLocation.SizeSquared() - mOriginalLocation.SizeSquared()))
+	{
+		FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, mOriginalLocation, DeltaTime, mSpeed);
+		mOwner->SetActorLocation(NewLocation);
+		UE_LOG(LogTemp, Display, TEXT("Estoy cerrando %f"), CurrentLocation.SizeSquared() - mOriginalLocation.SizeSquared());
 	}
 }
 
