@@ -51,18 +51,18 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 	FVector CurrentLocation = GetOwner()->GetTargetLocation();
 
 	if (bShouldMove && 
-		!FMath::IsNearlyZero(mTargetLocation.SizeSquared() - CurrentLocation.SizeSquared(), 0.04))
+		!FMath::IsNearlyZero((mTargetLocation - CurrentLocation).SizeSquared()))
 	{
 		FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, mTargetLocation, DeltaTime, mSpeed);
 		mOwner->SetActorLocation(NewLocation);
-		UE_LOG(LogTemp, Display, TEXT("Estoy abriendo %f"), CurrentLocation.SizeSquared() - mTargetLocation.SizeSquared());
+		UE_LOG(LogTemp, Display, TEXT("Estoy abriendo %f"), (mTargetLocation - CurrentLocation).SizeSquared());
 	}
 	else if(!bShouldMove &&
-		!FMath::IsNearlyZero(CurrentLocation.SizeSquared() - mOriginalLocation.SizeSquared()))
+		!FMath::IsNearlyZero((CurrentLocation - mOriginalLocation).SizeSquared()))
 	{
 		FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, mOriginalLocation, DeltaTime, mSpeed);
 		mOwner->SetActorLocation(NewLocation);
-		UE_LOG(LogTemp, Display, TEXT("Estoy cerrando %f"), CurrentLocation.SizeSquared() - mOriginalLocation.SizeSquared());
+		UE_LOG(LogTemp, Display, TEXT("Estoy cerrando %f"), (CurrentLocation - mOriginalLocation).SizeSquared());
 	}
 }
 
