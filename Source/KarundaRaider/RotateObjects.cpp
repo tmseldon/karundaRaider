@@ -18,12 +18,14 @@ void URotateObjects::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//Getting initial parameters 
 	mOwner = GetOwner();
-	mRotAxis = mOwner->GetActorUpVector();
-	mAngularSpeed = AngleToRotate / RotateTime;
-	
+	mInitRotation = mOwner->GetActorRotation();
 
+	//Getting initial parameters 
+	//mOwner = GetOwner();
+	//mRotAxis = mOwner->GetActorUpVector();
+	//mAngularSpeed = AngleToRotate / RotateTime;
+	
 	//mTargetDirection = mOriginalDirection.RotateAngleAxis(AngleToRotate, mOwner->GetActorUpVector());
 	//mSpeed = FVector::Distance(mOriginalLocation, mTargetLocation) / MoveTime;
 	
@@ -35,10 +37,23 @@ void URotateObjects::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	if (mLimitTime > RotateTime) { return; }
+	FRotator CurrentRotation = mOwner->GetActorRotation();
+	FRotator TargetRotation = mInitRotation;
+
+	if (bShouldRotate)
+	{
+		TargetRotation = mInitRotation + OffsetRotation;
+
+	}
+
+
 	
-	mDeltaRot = FQuat(mRotAxis, mAngularSpeed/DeltaTime);
-	mOwner->AddActorLocalRotation(mDeltaRot, false, 0, ETeleportType::None);
-	mLimitTime+= DeltaTime;
+
+
+	//if (mLimitTime > RotateTime) { return; }
+	//
+	//mDeltaRot = FQuat(mRotAxis, mAngularSpeed/DeltaTime);
+	//mOwner->AddActorLocalRotation(mDeltaRot, false, 0, ETeleportType::None);
+	//mLimitTime+= DeltaTime;
 }
 

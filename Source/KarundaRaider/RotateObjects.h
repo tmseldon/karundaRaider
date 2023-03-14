@@ -25,6 +25,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY(EditAnywhere)
+		FRotator OffsetRotation;
+
+	UPROPERTY(EditAnywhere)
 		float AngleToRotate = 45;
 
 	UPROPERTY(EditAnywhere)
@@ -32,11 +35,13 @@ public:
 
 	bool bShouldRotate = false;
 	AActor* mOwner;
-	FVector mRotAxis;
-	FVector mCurrentDirection;
-	FVector mTargetDirection;
-	float mAngularSpeed = 0;
-	float mLimitTime = 0;
-	FQuat mDeltaRot;
+	//FVector mRotAxis;
+	//FVector mCurrentDirection;
+	//FVector mTargetDirection;
+	//float mAngularSpeed = 0;
+	//float mLimitTime = 0;
+	//FQuat mDeltaRot;
+
+	FRotator mInitRotation;
 		
 };
