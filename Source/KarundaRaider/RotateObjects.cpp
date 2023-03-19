@@ -37,20 +37,17 @@ void URotateObjects::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	const FRotator CurrentRotation = mOwner->GetActorRotation();
+	FRotator CurrentRotation = mOwner->GetActorRotation();
 	FRotator TargetRotation = mInitRotation;
 
 	if (bShouldRotate)
 	{
 		TargetRotation = mInitRotation + OffsetRotation;
+
 	}
 
-	if (!CurrentRotation.Equals(TargetRotation, 0.005))
-	{
-		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, RotateTime);
-		mOwner->SetActorRotation(NewRotation);
-	}
 
+	
 
 
 	//if (mLimitTime > RotateTime) { return; }
