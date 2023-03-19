@@ -37,7 +37,7 @@ void URotateObjects::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	FRotator CurrentRotation = mOwner->GetActorRotation();
+	const FRotator CurrentRotation = mOwner->GetActorRotation();
 	FRotator TargetRotation = mInitRotation;
 
 	if (bShouldRotate)
