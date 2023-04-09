@@ -18,9 +18,16 @@ void URotateObjects::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Getting initial conditions and setting rotation
 	mOwner = GetOwner();
 	mInitRotation = mOwner->GetActorRotation();
 	mTargetRotation = mInitRotation + OffsetRotation;	
+}
+
+// Method to change the condition from outside
+void URotateObjects::SetShouldRotate(bool bNewCondition)
+{
+	bShouldRotate = bNewCondition;
 }
 
 
@@ -33,6 +40,7 @@ void URotateObjects::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	{
 		const FRotator CurrentRotation = mOwner->GetActorRotation();
 
+		// If we arrived at desired rotation with some delta, we don't do anything more here
 		if (CurrentRotation.Equals(mTargetRotation, 0.005)) { return; }
 		
 		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, mTargetRotation, DeltaTime, RotateInterTimeMod);

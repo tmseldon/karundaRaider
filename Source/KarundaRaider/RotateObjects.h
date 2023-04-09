@@ -23,6 +23,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void SetShouldRotate(bool bNewCondition);
 
 	UPROPERTY(EditAnywhere)
 		FRotator OffsetRotation;
@@ -30,7 +31,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		float RotateInterTimeMod = 5;
 
-	bool bShouldRotate = true;
+	bool bShouldRotate = false;
 	AActor* mOwner;
 	FRotator mInitRotation;
 	FRotator mTargetRotation;
