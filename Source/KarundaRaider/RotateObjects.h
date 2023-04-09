@@ -28,20 +28,10 @@ public:
 		FRotator OffsetRotation;
 
 	UPROPERTY(EditAnywhere)
-		float AngleToRotate = 45;
+		float RotateInterTimeMod = 5;
 
-	UPROPERTY(EditAnywhere)
-		float RotateTime = 5;
-
-	bool bShouldRotate = false;
+	bool bShouldRotate = true;
 	AActor* mOwner;
-	//FVector mRotAxis;
-	//FVector mCurrentDirection;
-	//FVector mTargetDirection;
-	//float mAngularSpeed = 0;
-	//float mLimitTime = 0;
-	//FQuat mDeltaRot;
-
 	FRotator mInitRotation;
-		
+	FRotator mTargetRotation;
 };
